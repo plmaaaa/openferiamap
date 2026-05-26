@@ -1,11 +1,16 @@
 App.api = {};
 
 (function (a) {
-    var DEFAULT_BASE = 'https://openferiamap.com';
     function getBase() {
-        var b = (localStorage.getItem('ofm_server') || DEFAULT_BASE)
-            .replace(/\/+$/, '')
-            .replace(/\/api$/i, '');
+        var stored = localStorage.getItem('ofm_server');
+        var b;
+        if (stored) {
+            b = stored.replace(/\/+$/, '').replace(/\/api$/i, '');
+        } else if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+            return 'UNCONFIGURED';
+        } else {
+            b = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
+        }
         return b + '/api/';
     }
 

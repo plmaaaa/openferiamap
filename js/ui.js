@@ -430,14 +430,18 @@ App.ui = {};
     u.loadFairs = function () {
         return App.api.getFairs().then(function (data) {
             if (!Array.isArray(data)) {
-                u.showToast('Servidor: ' + (data.message || JSON.stringify(data)));
+                if (data.message && data.message.indexOf('UNCONFIGURED') !== -1) {
+                    u.showToast('Configura el servidor en ⚙️ Ajustes');
+                } else {
+                    u.showToast(data.message || 'Error del servidor');
+                }
                 App.state.fairs = [];
                 u.renderFairs();
                 return;
             }
             App.state.fairs = data;
             u.renderFairs();
-        }).catch(function (e) { u.showToast('JS: ' + (e && e.message ? e.message : String(e))); });
+        }).catch(function (e) { u.showToast('Error: ' + (e && e.message ? e.message : String(e))); });
     };
 
     u.renderFairs = function () {
