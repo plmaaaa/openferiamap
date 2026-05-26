@@ -1,9 +1,10 @@
 App.api = {};
 
 (function (a) {
-    var DEFAULT_BASE = 'https://openferiamap.com/api/';
+    var DEFAULT_BASE = 'https://openferiamap.com';
     function getBase() {
-        return localStorage.getItem('ofm_server') || DEFAULT_BASE;
+        var b = (localStorage.getItem('ofm_server') || DEFAULT_BASE).replace(/\/+$/, '');
+        return b + '/api/';
     }
 
     function handleResponse(r) {

@@ -394,9 +394,7 @@
             var url = (byId('settings-server-url').value || '').trim();
             var msg = byId('settings-server-msg');
             if (url) {
-                if (!url.endsWith('/')) url += '/';
-                if (!url.endsWith('api/')) url += 'api/';
-                localStorage.setItem('ofm_server', url);
+                localStorage.setItem('ofm_server', url.replace(/\/+$/, ''));
                 msg.textContent = '✓ Guardado. Recargando...';
             } else {
                 localStorage.removeItem('ofm_server');
