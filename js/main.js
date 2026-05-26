@@ -393,8 +393,9 @@
         byId('settings-server-save').addEventListener('click', function () {
             var url = (byId('settings-server-url').value || '').trim();
             var msg = byId('settings-server-msg');
-            if (url && !url.endsWith('/')) url += '/';
             if (url) {
+                if (!url.endsWith('/')) url += '/';
+                if (!url.endsWith('api/')) url += 'api/';
                 localStorage.setItem('ofm_server', url);
                 msg.textContent = '✓ Servidor: ' + url;
             } else {
