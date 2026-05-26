@@ -406,15 +406,31 @@ App.map = {};
         map.setView([parseFloat(lat), parseFloat(lng)], parseInt(zoom) || 16);
     };
 
+    var _locationMarker = null;
+
     m.goToMyLocation = function () {
         if (!navigator.geolocation) { App.ui.showToast('Geolocalizaci\u00f3n no disponible'); return; }
+        var btn = document.getElementById('btn-my-location');
+        if (btn) btn.classList.add('active');
         navigator.geolocation.getCurrentPosition(
             function (pos) {
-                map.setView([pos.coords.latitude, pos.coords.longitude], 17);
-                L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(map)
-                    .bindPopup('Tu ubicaci\u00f3n').openPopup();
+                if (btn) btn.classList.remove('active');
+                var lat = pos.coords.latitude, lng = pos.coords.longitude;
+                if (_locationMarker) map.removeLayer(_locationMarker);
+                var icon = L.divIcon({
+                    className: '',
+                    html: '<div class="my-location-dot"></div>',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                });
+                _locationMarker = L.marker([lat, lng], { icon: icon, zIndexOffset: 9999 }).addTo(map);
+                map.setView([lat, lng], 17);
             },
-            function () { App.ui.showToast('No se pudo obtener tu ubicaci\u00f3n'); }
+            function () {
+                if (btn) btn.classList.remove('active');
+                App.ui.showToast('No se pudo obtener tu ubicaci\u00f3n');
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
         );
     };
 

@@ -101,10 +101,23 @@ html, body {
 
 /* Settings floating button (bottom-left, above layer control) */
 
-/* Satellite toggle */
+/* Satellite + location buttons */
 #btn-satellite { bottom: 100px; right: 15px; }
 #btn-my-location { bottom: 155px; right: 15px; }
 #btn-satellite.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* My location marker */
+.my-location-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #2979ff; border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(41,121,255,.6);
+    animation: locationPulse 2s ease-out infinite;
+}
+@keyframes locationPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(41,121,255,.5); }
+    70%  { box-shadow: 0 0 0 12px rgba(41,121,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(41,121,255,0); }
+}
 
 /* Changelog button */
 #btn-changelog { bottom: 150px; left: 15px; z-index: calc(var(--z-panel) + 1); }
@@ -544,10 +557,22 @@ html, body {
     #fair-panel-toggle { display: none; }
 }
 
+@media (max-width: 767px) {
+    /* Panel ocupa máx 45% de la pantalla en móvil */
+    #fair-panel { max-height: 45vh; }
+
+    /* Botones flotantes más arriba para no quedar bajo el panel */
+    #btn-satellite  { bottom: calc(45vh + 15px); }
+    #btn-my-location { bottom: calc(45vh + 70px); }
+    #btn-changelog  { bottom: calc(45vh + 70px); }
+
+    /* Panel de novedades no sale por arriba de la pantalla */
+    #changelog-panel { bottom: calc(45vh + 50px); left: 10px; right: 10px; width: auto; }
+}
+
 @media (max-width: 480px) {
     #logo { font-size: 15px; }
     .modal-content { padding: 20px; }
     .modal-content h2 { font-size: 18px; }
     #filter-bar button { padding: 4px 10px; font-size: 11px; }
-    #fair-panel { max-height: 50vh; }
 }
