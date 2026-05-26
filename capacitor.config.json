@@ -1,5 +1,12 @@
 {
   "appId": "com.openferiamap.app",
   "appName": "openferiamap",
-  "webDir": "www"
+  "webDir": "www",
+  "plugins": {
+    "StatusBar": {
+      "overlaysWebView": false,
+      "backgroundColor": "#2d5a27",
+      "style": "LIGHT"
+    }
+  }
 }
