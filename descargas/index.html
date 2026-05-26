@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descargas — OpenFeriaMap</title>
+    <style>
+        :root {
+            --primary: #2d5a27;
+            --primary-light: #e8f5e1;
+            --bg: #ffffff;
+            --bg-light: #f5f5f5;
+            --text: #1a1a1a;
+            --text-light: #666;
+            --border: #e0e0e0;
+            --header-h: 52px;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0,0,0,.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-light); color: var(--text); min-height: 100vh; }
+
+        /* Header */
+        #header {
+            background: var(--primary); color: white;
+            height: var(--header-h); display: flex; align-items: center;
+            justify-content: space-between; padding: 0 20px;
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+        }
+        #logo { font-size: 18px; font-weight: 800; letter-spacing: -.3px; }
+        #version-badge {
+            font-size: 10px; font-weight: 700; background: rgba(255,255,255,.18);
+            color: rgba(255,255,255,.9); padding: 2px 7px; border-radius: 20px;
+            vertical-align: middle;
+        }
+        .btn-back {
+            color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px;
+            font-weight: 600; padding: 6px 12px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,.3); transition: background .2s;
+        }
+        .btn-back:hover { background: rgba(255,255,255,.15); }
+
+        /* Page */
+        .page { max-width: 760px; margin: 0 auto; padding: 40px 20px; }
+        .page-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+        .page-subtitle { color: var(--text-light); font-size: 15px; margin-bottom: 36px; }
+
+        /* Cards */
+        .dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 520px) { .dl-grid { grid-template-columns: 1fr; } }
+
+        .dl-card {
+            background: var(--bg); border-radius: var(--radius);
+            box-shadow: var(--shadow); padding: 28px 24px;
+            display: flex; flex-direction: column; gap: 12px;
+            border: 1px solid var(--border);
+            transition: transform .2s, box-shadow .2s;
+        }
+        .dl-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.14); }
+
+        .dl-icon { font-size: 40px; line-height: 1; }
+        .dl-title { font-size: 20px; font-weight: 800; }
+        .dl-desc { font-size: 13px; color: var(--text-light); line-height: 1.6; flex: 1; }
+        .dl-meta { font-size: 11px; color: var(--text-light); }
+
+        .btn-dl {
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+            background: var(--primary); color: white; border: none;
+            padding: 12px 20px; border-radius: 8px; font-size: 14px;
+            font-weight: 700; cursor: pointer; text-decoration: none;
+            transition: opacity .2s, transform .1s;
+        }
+        .btn-dl:hover { opacity: .9; }
+        .btn-dl:active { transform: scale(.97); }
+        .btn-dl.disabled {
+            background: #ccc; cursor: not-allowed; pointer-events: none;
+        }
+        .dl-badge {
+            display: inline-block; font-size: 10px; font-weight: 700;
+            padding: 2px 8px; border-radius: 20px; background: var(--primary-light);
+            color: var(--primary);
+        }
+        .dl-badge.soon { background: #fff3cd; color: #856404; }
+
+        /* Requirements */
+        .dl-reqs { margin-top: 6px; }
+        .dl-reqs li { font-size: 12px; color: var(--text-light); margin-left: 16px; margin-top: 3px; }
+
+        /* Footer */
+        .page-footer { margin-top: 48px; text-align: center; font-size: 12px; color: var(--text-light); }
+    </style>
+</head>
+<body>
+
+<div id="header">
+    <h1 id="logo">🗺️ OpenFeriaMap <span id="version-badge">v1.0</span></h1>
+    <a href="../" class="btn-back">← Volver al mapa</a>
+</div>
+
+<div class="page">
+    <h2 class="page-title">📥 Descargas</h2>
+    <p class="page-subtitle">Descarga el servidor o la app para Android e instala tu propia instancia de OpenFeriaMap.</p>
+
+    <div class="dl-grid">
+
+        <div class="dl-card">
+            <div class="dl-icon">🖥️</div>
+            <div>
+                <div class="dl-title">Servidor</div>
+                <span class="dl-badge">PHP + MySQL</span>
+            </div>
+            <p class="dl-desc">
+                Paquete completo del servidor: API PHP, base de datos MySQL y panel de administración.
+                Despliégalo en cualquier hosting con Apache + PHP 8+.
+            </p>
+            <ul class="dl-reqs">
+                <li>Apache 2.4+ / Nginx</li>
+                <li>PHP 8.0+</li>
+                <li>MySQL 5.7+ / MariaDB 10+</li>
+            </ul>
+            <div class="dl-meta">v1.0 · ~2 MB</div>
+            <a href="#" class="btn-dl disabled">⬇️ Descargar Servidor</a>
+        </div>
+
+        <div class="dl-card">
+            <div class="dl-icon">📱</div>
+            <div>
+                <div class="dl-title">App Android</div>
+                <span class="dl-badge soon">Próximamente</span>
+            </div>
+            <p class="dl-desc">
+                Aplicación Android nativa con soporte offline, GPS y notificaciones.
+                Conéctala a cualquier servidor OpenFeriaMap.
+            </p>
+            <ul class="dl-reqs">
+                <li>Android 8.0 (Oreo) o superior</li>
+                <li>Conexión a un servidor activo</li>
+            </ul>
+            <div class="dl-meta">v1.0 · Android 8+</div>
+            <a href="#" class="btn-dl disabled">⬇️ Descargar APK</a>
+        </div>
+
+    </div>
+
+    <div class="page-footer">
+        OpenFeriaMap v1.0 &nbsp;·&nbsp; Código abierto &nbsp;·&nbsp;
+        <a href="../" style="color:var(--primary)">Volver al mapa</a>
+    </div>
+</div>
+
+</body>
+</html>

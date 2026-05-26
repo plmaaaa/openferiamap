@@ -1,0 +1,18 @@
+{
+  "name": "OpenFeriaMap — Mapa Interactivo de Ferias",
+  "short_name": "OpenFeriaMap",
+  "description": "Crea, explora y gestiona mapas interactivos de ferias y eventos populares",
+  "start_url": "/openferiamap/",
+  "scope": "/openferiamap/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

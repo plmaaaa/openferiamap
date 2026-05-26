@@ -1,0 +1,28 @@
+# Uploads de usuarios
+api/uploads/
+
+# Dependencias Node (para Capacitor más adelante)
+node_modules/
+package-lock.json
+
+# Capacitor / Android build
+android/
+ios/
+dist/
+
+# Variables de entorno (si algún día usas .env)
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Claude Code
+.claude/

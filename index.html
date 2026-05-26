@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>OpenFeriaMap — Mapa Interactivo de Ferias</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="header">
+        <div id="header-left">
+            <h1 id="logo">🗺️ OpenFeriaMap <span id="version-badge">v1.0</span></h1>
+        </div>
+        <div id="user-area">
+            <button id="btn-login">Iniciar Sesión</button>
+            <div id="user-menu" style="display:none">
+                <span id="user-greeting"></span>
+                <button id="btn-admin" class="btn-sm" style="display:none">Admin</button>
+                <button id="btn-logout" class="btn-sm">Salir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div id="filter-bar">
+        <button data-cat="todos" class="active">🔍 Todo</button>
+        <button data-cat="caseta">🏠 Caseta</button>
+        <button data-cat="cacharrito">🎡 Cacharrito</button>
+        <button data-cat="puesto">🎪 Puesto</button>
+        <button data-cat="baño">🚻 Baño</button>
+        <button data-cat="estacionamiento">🚗 Parking</button>
+        <button data-cat="otro">📍 Otro</button>
+    </div>
+
+    <button id="btn-settings" class="map-btn" style="display:none" title="Configuración">⚙️</button>
+    <button id="btn-changelog" class="map-btn" title="Novedades">📣<span id="changelog-dot"></span></button>
+    <button id="btn-satellite" class="map-btn active" title="Cambiar a mapa">🔲</button>
+    <button id="btn-my-location" class="map-btn" title="Mi ubicación">📍</button>
+
+    <div id="editor-toolbar">
+        <button id="btn-add-marker" class="btn-tool-primary">📍 Añadir Marcador</button>
+        <button id="btn-add-recuadro" class="btn-tool-primary">⬜ Dibujar Recuadro</button>
+        <button id="btn-move-points" class="btn-tool-secondary">↔ Mover puntos</button>
+        <button id="btn-editor-done" class="btn-tool-danger">✓ Hecho</button>
+    </div>
+
+    <div id="fair-panel">
+        <div id="fair-panel-handle"><div class="handle-bar"></div></div>
+        <div id="fair-panel-tabs">
+            <button id="fair-panel-toggle" title="Ocultar panel">◀</button>
+            <button data-tab="explorar" class="active">Explorar</button>
+            <button data-tab="mis-mapas">Mis Mapas</button>
+        </div>
+        <div id="fair-panel-header">
+            <span id="fair-panel-title">Ferias</span>
+            <div id="fair-panel-actions">
+                <button id="btn-filter-pending" style="display:none" class="btn-sm">⏳ Por aprobar</button>
+                <button id="btn-create-fair" style="display:none" class="btn-sm">+ Nuevo</button>
+            </div>
+        </div>
+        <div id="fair-search-wrap" style="display:none">
+            <input type="text" id="fair-search" placeholder="🔎 Buscar feria, localidad o creador...">
+        </div>
+        <div id="fair-scroll"></div>
+    </div>
+
+    <div id="point-form-panel">
+        <div class="handle-bar"></div>
+        <h3 id="pf-titulo">Nuevo Punto</h3>
+        <input type="hidden" id="pf-tipo">
+        <input type="hidden" id="pf-coords">
+        <input type="text" id="pf-nombre" placeholder="Nombre del punto" required>
+        <select id="pf-categoria" required>
+            <option value="">Selecciona categoría</option>
+            <option value="caseta">🏠 Caseta</option>
+            <option value="cacharrito">🎡 Cacharrito</option>
+            <option value="puesto">🎪 Puesto</option>
+            <option value="baño">🚻 Baño</option>
+            <option value="estacionamiento">🚗 Estacionamiento</option>
+            <option value="otro">📍 Otro</option>
+        </select>
+        <div id="pf-subcategoria-wrap" style="display:none;margin-bottom:8px">
+            <select id="pf-subcategoria" style="width:100%;padding:10px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--bg)"></select>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span id="pf-emoji-preview" style="font-size:26px;min-width:36px;text-align:center">—</span>
+            <button type="button" id="pf-emoji-btn" class="btn-secondary" style="flex:1;padding:8px 12px;font-size:13px">🎨 Personalizar emoji</button>
+            <button type="button" id="pf-emoji-clear" style="display:none;background:none;border:none;cursor:pointer;font-size:18px;color:#888" title="Quitar emoji">✕</button>
+            <input type="hidden" id="pf-emoji">
+        </div>
+        <textarea id="pf-sinopsis" placeholder="Historia / Sinopsis del lugar..." rows="3"></textarea>
+        <input type="text" id="pf-imagen" placeholder="URL de imagen (opcional)">
+        <input type="file" id="pf-file" accept="image/*" style="margin-bottom:8px">
+        <img id="pf-preview" style="display:none;max-width:100%;max-height:120px;border-radius:var(--radius-sm);margin-bottom:8px;object-fit:cover">
+        <p id="pf-error" class="form-error"></p>
+        <p id="pf-success" class="form-success"></p>
+        <button id="pf-submit" class="btn-primary">Guardar Punto</button>
+        <button id="pf-cancel" class="btn-secondary">Cancelar</button>
+    </div>
+
+    <div id="modal-overlay" class="modal-overlay" style="display:none">
+        <div class="modal-content" onclick="event.stopPropagation()">
+
+            <div id="modal-login">
+                <button class="modal-close">✕</button>
+                <h2>Iniciar Sesión</h2>
+                <form id="login-form">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                    <input type="password" id="login-password" placeholder="Contraseña" required>
+                    <button type="submit" class="btn-primary">Entrar</button>
+                </form>
+                <p class="modal-switch">¿No tienes cuenta? <a href="#">Regístrate</a></p>
+                <p id="login-error" class="form-error"></p>
+            </div>
+
+            <div id="modal-register" style="display:none">
+                <button class="modal-close">✕</button>
+                <h2>Registrarse</h2>
+                <form id="register-form">
+                    <input type="text" id="reg-nombre" placeholder="Apodo" required>
+                    <input type="email" id="reg-email" placeholder="Email" required>
+                    <input type="password" id="reg-password" placeholder="Contraseña" required>
+                    <button type="submit" class="btn-primary">Crear Cuenta</button>
+                </form>
+                <p class="modal-switch">¿Ya tienes cuenta? <a href="#">Inicia sesión</a></p>
+                <p id="register-error" class="form-error"></p>
+            </div>
+
+            <div id="modal-create-fair" style="display:none">
+                <button class="modal-close">✕</button>
+                <h2 id="cf-titulo">Nuevo Mapa de Feria</h2>
+                <form id="create-fair-form">
+                    <input type="hidden" id="cf-id-feria">
+                    <input type="text" id="cf-nombre" placeholder="Nombre de la feria" required>
+                    <input type="text" id="cf-localidad" placeholder="Localidad" required>
+                    <div class="form-group">
+                        <label>Zona de la feria</label>
+                        <input type="hidden" id="cf-zona">
+                        <input type="hidden" id="cf-lat">
+                        <input type="hidden" id="cf-lng">
+                        <button type="button" id="btn-draw-zone" class="btn-secondary">⬜ Dibujar zona</button>
+                        <p id="cf-zona-status" style="font-size:13px;color:#999;margin:6px 0 0">Dibuja un recuadro delimitando el área de la feria</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Color del perímetro</label>
+                        <input type="color" id="cf-color" value="#e74c3c" style="width:100%;height:40px;border:2px solid #ddd;border-radius:var(--radius-sm);cursor:pointer;padding:2px">
+                    </div>
+                    <button type="submit" class="btn-primary" id="cf-submit">Crear Mapa</button>
+                </form>
+                <p id="cf-error" class="form-error"></p>
+                <p id="cf-success" class="form-success"></p>
+            </div>
+
+            <div id="modal-add-point" style="display:none">
+                <button class="modal-close">✕</button>
+                <h2>Añadir Punto de Interés</h2>
+                <form onsubmit="return false">
+                    <input type="text" id="ap-nombre" placeholder="Nombre" required>
+                    <select id="ap-categoria" required>
+                        <option value="">Selecciona categoría</option>
+                        <option value="caseta">🏠 Caseta</option>
+                        <option value="cacharrito">🎡 Cacharrito</option>
+                        <option value="puesto">🎪 Puesto</option>
+                        <option value="baño">🚻 Baño</option>
+                        <option value="estacionamiento">🚗 Estacionamiento</option>
+                        <option value="otro">📍 Otro</option>
+                    </select>
+                    <div id="ap-subcategoria-wrap" style="display:none;margin-bottom:8px">
+                        <select id="ap-subcategoria" style="width:100%;padding:10px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--bg)"></select>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                        <span id="ap-emoji-preview" style="font-size:26px;min-width:36px;text-align:center">—</span>
+                        <button type="button" id="ap-emoji-btn" class="btn-secondary" style="flex:1;padding:8px 12px;font-size:13px">🎨 Personalizar emoji</button>
+                        <button type="button" id="ap-emoji-clear" style="display:none;background:none;border:none;cursor:pointer;font-size:18px;color:#888" title="Quitar emoji">✕</button>
+                        <input type="hidden" id="ap-emoji">
+                    </div>
+                    <select id="ap-tipo">
+                        <option value="marcador">Marcador (punto)</option>
+                        <option value="recuadro">Recuadro (zona)</option>
+                    </select>
+                    <input type="text" id="ap-sinopsis" placeholder="Sinopsis / Descripción breve">
+                    <textarea id="ap-historia" placeholder="Historia del lugar..."></textarea>
+                    <input type="text" id="ap-imagen" placeholder="URL de imagen (opcional)">
+                    <div class="coord-row">
+                        <input type="text" id="ap-lat" placeholder="Latitud" required>
+                        <input type="text" id="ap-lng" placeholder="Longitud" required>
+                    </div>
+                    <button type="button" id="btn-point-place" class="btn-secondary">📍 Colocar en el mapa</button>
+                    <button type="submit" class="btn-primary" id="btn-ap-submit">Añadir Punto</button>
+                </form>
+                <p id="ap-error" class="form-error"></p>
+                <p id="ap-success" class="form-success"></p>
+            </div>
+
+            <div id="modal-delete-confirm" style="display:none">
+                <button class="modal-close">✕</button>
+                <h2>🗑️ Eliminar mapa</h2>
+                <p style="margin:8px 0 16px;font-size:14px;color:var(--text-muted)" id="dc-fair-name"></p>
+                <p style="margin:0 0 12px;font-size:13px;color:var(--danger)"><strong>⚠️ Esta acción no se puede deshacer.</strong> Se borrarán todos los puntos y reseñas asociados.</p>
+                <input type="password" id="dc-password" autocomplete="off" placeholder="Tu contraseña para confirmar" style="margin-bottom:10px">
+                <button id="dc-confirm" class="btn-primary" style="background:var(--danger);width:100%">Eliminar mapa</button>
+                <button id="dc-cancel" class="btn-secondary" style="width:100%;margin-top:6px">Cancelar</button>
+                <p id="dc-error" class="form-error"></p>
+            </div>
+
+            <div id="modal-settings" style="display:none">
+                <button class="modal-close">✕</button>
+                <h2>⚙️ Configuración</h2>
+
+                <div class="settings-section">
+                    <h3 class="settings-section-title">🌐 Servidor</h3>
+                    <label class="settings-label">URL del servidor API</label>
+                    <input type="url" id="settings-server-url" autocomplete="off" placeholder="https://openferiamap.com/api/">
+                    <p class="settings-hint">Deja vacío para usar <strong>openferiamap.com</strong>. Pon una IP local para pruebas desde Android.</p>
+                    <button id="settings-server-save" type="button" class="btn-secondary" style="width:100%">Guardar servidor</button>
+                    <p id="settings-server-msg" class="form-success"></p>
+                </div>
+
+                <div class="settings-divider"></div>
+
+                <div class="settings-section">
+                    <h3 class="settings-section-title">👤 Cuenta</h3>
+                    <form id="settings-form" autocomplete="off">
+                        <p id="settings-user-info" style="margin-bottom:15px;padding:12px;background:var(--bg-light);border-radius:var(--radius-sm);font-size:14px;line-height:1.6"></p>
+                        <label class="settings-label">Email</label>
+                        <input type="email" id="settings-email" placeholder="Nuevo email" required>
+                        <label class="settings-label">Contraseña actual (requerida para cambios)</label>
+                        <input type="password" id="settings-cur-password" placeholder="Contraseña actual" required>
+                        <label class="settings-label">Nueva contraseña (dejar vacío para no cambiar)</label>
+                        <input type="password" id="settings-new-password" placeholder="Nueva contraseña">
+                        <input type="password" id="settings-confirm-password" placeholder="Confirmar nueva contraseña">
+                        <button type="submit" class="btn-primary">Guardar cambios</button>
+                    </form>
+                    <p id="settings-error" class="form-error"></p>
+                    <p id="settings-success" class="form-success"></p>
+                </div>
+            </div>
+
+            <div id="modal-edit-points" style="display:none">
+                <button class="modal-close">✕</button>
+                <h2 id="ep-title">✏️ Editar Puntos</h2>
+                <div id="ep-list" style="max-height:50vh;overflow-y:auto"></div>
+                <button id="ep-close" class="btn-secondary" style="margin-top:8px">Cerrar</button>
+                <p id="ep-error" class="form-error"></p>
+                <p id="ep-success" class="form-success"></p>
+            </div>
+
+            <div id="modal-admin" style="display:none">
+                <button class="modal-close">✕</button>
+                <h2>⚙️ Panel de Administración</h2>
+                <div id="admin-users-panel" style="max-height:50vh;overflow-y:auto">
+                    <div id="admin-users-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <div id="emoji-popup-backdrop" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:3500;background:rgba(0,0,0,.4)"></div>
+    <div id="emoji-popup" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:3501;background:var(--bg);border-radius:var(--radius) var(--radius) 0 0;padding:16px;width:min(100%,420px);max-height:55vh;overflow-y:auto;box-shadow:0 -4px 24px rgba(0,0,0,.3)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <strong style="font-size:15px">Elige un emoji</strong>
+            <button type="button" id="emoji-popup-close" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;color:var(--text-light)">✕</button>
+        </div>
+        <div id="emoji-popup-grid"></div>
+    </div>
+
+    <div id="changelog-panel">
+        <div id="changelog-header">
+            <span>📣 Novedades</span>
+            <a href="descargas/" target="_blank" id="changelog-dl-btn">📥 Descargar</a>
+            <button id="changelog-close">✕</button>
+        </div>
+        <div id="changelog-body">
+            <div class="cl-entry">
+                <div class="cl-entry-head">
+                    <span class="cl-version">v1.0</span>
+                    <span class="cl-date">Mayo 2026</span>
+                </div>
+                <strong class="cl-title">🚀 Lanzamiento oficial</strong>
+                <ul class="cl-list">
+                    <li>Mapas interactivos con vista satélite y callejero</li>
+                    <li>Puntos de interés con categorías y subcategorías personalizables</li>
+                    <li>Emojis personalizados por punto</li>
+                    <li>Sistema de reseñas y puntuaciones</li>
+                    <li>Registro de usuarios y gestión de roles</li>
+                    <li>Flujo de verificación de ferias por moderadores</li>
+                    <li>Panel de administración</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
