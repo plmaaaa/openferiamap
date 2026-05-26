@@ -39,24 +39,20 @@ html, body {
 }
 
 #header {
-    position: fixed; top: 0; left: 0; right: 0;
-    height: calc(var(--header-h) + var(--sat, 0px));
-    padding-top: var(--sat, 0px);
+    position: fixed; top: var(--sat, 0px); left: 0; right: 0;
+    height: var(--header-h);
     background: var(--primary); color: white; display: flex;
     align-items: center; justify-content: space-between;
-    padding-left: 15px; padding-right: 15px;
+    padding: 0 15px;
     z-index: calc(var(--z-panel) - 1);
     box-shadow: var(--shadow-md);
-}
-#map {
-    top: calc(var(--header-h) + var(--sat, 0px)) !important;
 }
 #logo { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
 #user-area { display: flex; align-items: center; gap: 10px; }
 #user-greeting { font-size: 13px; opacity: .9; }
 
 #map {
-    position: absolute; top: var(--header-h); left: 0; right: 0; bottom: 0;
+    position: absolute; top: calc(var(--header-h) + var(--sat, 0px)); left: 0; right: 0; bottom: 0;
     z-index: var(--z-map);
 }
 
