@@ -100,8 +100,6 @@ html, body {
 }
 
 /* Settings floating button (bottom-left, above layer control) */
-#btn-settings { bottom: 95px; left: 15px; }
-#btn-settings.active { background: var(--primary); color: white; border-color: var(--primary); }
 
 /* Satellite toggle */
 #btn-satellite { bottom: 100px; right: 15px; }
