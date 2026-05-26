@@ -397,13 +397,13 @@
                 if (!url.endsWith('/')) url += '/';
                 if (!url.endsWith('api/')) url += 'api/';
                 localStorage.setItem('ofm_server', url);
-                msg.textContent = '✓ Servidor: ' + url;
+                msg.textContent = '✓ Guardado. Recargando...';
             } else {
                 localStorage.removeItem('ofm_server');
-                msg.textContent = '✓ Usando servidor predeterminado (openferiamap.com)';
+                msg.textContent = '✓ Servidor predeterminado. Recargando...';
             }
             msg.style.color = 'var(--success)';
-            setTimeout(function () { msg.textContent = ''; }, 3000);
+            setTimeout(function () { window.location.reload(); }, 1000);
         });
 
         /* ---- Create fair from empty state ---- */
