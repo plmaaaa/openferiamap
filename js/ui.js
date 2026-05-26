@@ -429,9 +429,15 @@ App.ui = {};
     /* ---- Fairs (load + render) ---- */
     u.loadFairs = function () {
         return App.api.getFairs().then(function (data) {
+            if (!Array.isArray(data)) {
+                u.showToast('Servidor: ' + (data.message || JSON.stringify(data)));
+                App.state.fairs = [];
+                u.renderFairs();
+                return;
+            }
             App.state.fairs = data;
             u.renderFairs();
-        }).catch(function () { u.showToast('Error al cargar mapas de ferias'); });
+        }).catch(function (e) { u.showToast('JS: ' + (e && e.message ? e.message : String(e))); });
     };
 
     u.renderFairs = function () {

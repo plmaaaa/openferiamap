@@ -9,14 +9,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$allowed_origins = [
-    'http://localhost',
-    'http://127.0.0.1',
-    'https://localhost',        // Capacitor Android WebView
-    'capacitor://localhost',    // Capacitor iOS / older Android
-];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$cors_origin = in_array($origin, $allowed_origins) ? $origin : 'http://localhost';
+$cors_origin = ($origin !== '' && $origin !== 'null') ? $origin : 'https://localhost';
 header("Access-Control-Allow-Origin: $cors_origin");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");

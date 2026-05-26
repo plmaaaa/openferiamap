@@ -9,14 +9,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$allowed_origins = [
-    'http://localhost',
-    'http://127.0.0.1',
-    'https://localhost',
-    'capacitor://localhost',
-];
 $origin      = $_SERVER['HTTP_ORIGIN'] ?? '';
-$cors_origin = in_array($origin, $allowed_origins) ? $origin : 'http://localhost';
+$cors_origin = ($origin !== '' && $origin !== 'null') ? $origin : 'https://localhost';
 header("Access-Control-Allow-Origin: $cors_origin");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");

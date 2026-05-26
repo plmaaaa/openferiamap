@@ -12,24 +12,25 @@ App.api = {};
         });
     }
 
-    function networkError() {
-        return { success: false, message: 'No se puede conectar con el servidor local. ¿Está XAMPP en marcha?' };
+    function networkError(url, err) {
+        return { success: false, message: 'Red: ' + (err && err.message ? err.message : 'sin respuesta') + ' → ' + url };
     }
 
     function post(endpoint, data) {
-        return fetch(getBase() +endpoint, {
+        var url = getBase() + endpoint;
+        return fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify(data)
         }).then(handleResponse).catch(function (err) {
             if (err && err.success === false) return err;
-            return networkError();
+            return networkError(url, err);
         });
     }
 
     function get(endpoint, params) {
-        var url = getBase() +endpoint;
+        var url = getBase() + endpoint;
         var keys = params ? Object.keys(params) : [];
         if (keys.length) {
             url += '?' + keys.map(function (k) {
@@ -38,7 +39,7 @@ App.api = {};
         }
         return fetch(url, { credentials: 'include' }).then(handleResponse).catch(function (err) {
             if (err && err.success === false) return err;
-            return networkError();
+            return networkError(url, err);
         });
     }
 
