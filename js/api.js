@@ -20,7 +20,7 @@ App.api = {};
         return fetch(getBase() +endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin',
+            credentials: 'include',
             body: JSON.stringify(data)
         }).then(handleResponse).catch(function (err) {
             if (err && err.success === false) return err;
@@ -36,7 +36,7 @@ App.api = {};
                 return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
             }).join('&');
         }
-        return fetch(url, { credentials: 'same-origin' }).then(handleResponse).catch(function (err) {
+        return fetch(url, { credentials: 'include' }).then(handleResponse).catch(function (err) {
             if (err && err.success === false) return err;
             return networkError();
         });
@@ -119,7 +119,7 @@ App.api = {};
         fd.append('imagen', file);
         return fetch(getBase() +'subir_imagen.php', {
             method: 'POST',
-            credentials: 'same-origin',
+            credentials: 'include',
             body: fd
         }).then(function (r) { return r.json(); });
     };

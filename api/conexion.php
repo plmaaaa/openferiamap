@@ -1,10 +1,20 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax']);
+    $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+    session_set_cookie_params([
+        'httponly' => true,
+        'samesite' => $isSecure ? 'None' : 'Lax',
+        'secure'   => $isSecure,
+    ]);
     session_start();
 }
 
-$allowed_origins = ['http://localhost', 'http://127.0.0.1'];
+$allowed_origins = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'https://localhost',        // Capacitor Android WebView
+    'capacitor://localhost',    // Capacitor iOS / older Android
+];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $cors_origin = in_array($origin, $allowed_origins) ? $origin : 'http://localhost';
 header("Access-Control-Allow-Origin: $cors_origin");
