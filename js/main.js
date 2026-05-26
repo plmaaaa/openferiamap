@@ -2,6 +2,12 @@
     'use strict';
 
     function init() {
+        if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+            var StatusBar = Capacitor.Plugins.StatusBar;
+            StatusBar.setOverlaysWebView({ overlay: false });
+            StatusBar.setBackgroundColor({ color: '#2d5a27' });
+            StatusBar.setStyle({ style: 'LIGHT' });
+        }
         App.auth.init();
         App.map.init();
         App.ui.updateHeader();
