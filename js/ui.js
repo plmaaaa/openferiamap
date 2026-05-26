@@ -866,19 +866,24 @@ App.ui = {};
 
     /* ---- Settings ---- */
     u.showSettings = function () {
-        if (!App.auth.isLoggedIn()) { u.showToast('Debes iniciar sesi\u00f3n'); return; }
-        var user = App.state.user;
-        var roleLabels = { root: 'Root', moderador: 'Moderador', verificador: 'Verificador', usuario: 'Usuario' };
-        var roleColors = { root: '#e74c3c', moderador: '#007bff', verificador: '#28a745', usuario: '#6c757d' };
-        document.getElementById('settings-user-info').innerHTML =
-            '<strong>' + u.escapeHtml(user.nombre) + '</strong><br>' +
-            '<span style="display:inline-block;margin-top:4px;padding:2px 10px;border-radius:10px;font-size:12px;font-weight:700;color:white;background:' + (roleColors[user.rol] || '#6c757d') + '">' + (roleLabels[user.rol] || user.rol) + '</span>';
-        document.getElementById('settings-email').value = user.email || '';
-        document.getElementById('settings-cur-password').value = '';
-        document.getElementById('settings-new-password').value = '';
-        document.getElementById('settings-confirm-password').value = '';
-        document.getElementById('settings-error').textContent = '';
-        document.getElementById('settings-success').textContent = '';
+        var accountSection = document.getElementById('settings-account-section');
+        if (App.auth.isLoggedIn()) {
+            var user = App.state.user;
+            var roleLabels = { root: 'Root', moderador: 'Moderador', verificador: 'Verificador', usuario: 'Usuario' };
+            var roleColors = { root: '#e74c3c', moderador: '#007bff', verificador: '#28a745', usuario: '#6c757d' };
+            document.getElementById('settings-user-info').innerHTML =
+                '<strong>' + u.escapeHtml(user.nombre) + '</strong><br>' +
+                '<span style="display:inline-block;margin-top:4px;padding:2px 10px;border-radius:10px;font-size:12px;font-weight:700;color:white;background:' + (roleColors[user.rol] || '#6c757d') + '">' + (roleLabels[user.rol] || user.rol) + '</span>';
+            document.getElementById('settings-email').value = user.email || '';
+            document.getElementById('settings-cur-password').value = '';
+            document.getElementById('settings-new-password').value = '';
+            document.getElementById('settings-confirm-password').value = '';
+            document.getElementById('settings-error').textContent = '';
+            document.getElementById('settings-success').textContent = '';
+            if (accountSection) accountSection.style.display = '';
+        } else {
+            if (accountSection) accountSection.style.display = 'none';
+        }
         var serverEl = document.getElementById('settings-server-url');
         if (serverEl) serverEl.value = localStorage.getItem('ofm_server') || '';
         document.getElementById('settings-server-msg').textContent = '';
