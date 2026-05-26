@@ -1,0 +1,27 @@
+{
+  "name": "openferiamap",
+  "version": "1.0.0",
+  "description": "Aplicación web progresiva (PWA) para crear, explorar y gestionar mapas interactivos de ferias y eventos populares. Diseñada para funcionar en navegadores web y compatible con dispositivos Android mediante WebView.",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "sync": "node build.js && npx cap sync android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plmaaaa/openferiamap.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/plmaaaa/openferiamap/issues"
+  },
+  "homepage": "https://github.com/plmaaaa/openferiamap#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/core": "^8.3.4"
+  }
+}

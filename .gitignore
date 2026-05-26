@@ -9,6 +9,7 @@ package-lock.json
 android/
 ios/
 dist/
+www/
 
 # Variables de entorno (si algún día usas .env)
 .env
