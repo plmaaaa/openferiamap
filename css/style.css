@@ -40,12 +40,16 @@ html, body {
 
 #header {
     position: fixed; top: 0; left: 0; right: 0;
-    height: var(--header-h);
+    height: calc(var(--header-h) + var(--sat, 0px));
+    padding-top: var(--sat, 0px);
     background: var(--primary); color: white; display: flex;
     align-items: center; justify-content: space-between;
-    padding: 0 15px;
+    padding-left: 15px; padding-right: 15px;
     z-index: calc(var(--z-panel) - 1);
     box-shadow: var(--shadow-md);
+}
+#map {
+    top: calc(var(--header-h) + var(--sat, 0px)) !important;
 }
 #logo { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
 #user-area { display: flex; align-items: center; gap: 10px; }
@@ -71,7 +75,7 @@ html, body {
 
 /* Filter bar */
 #filter-bar {
-    position: fixed; top: calc(var(--header-h) + 10px);
+    position: fixed; top: calc(var(--header-h) + var(--sat, 0px) + 10px);
     left: 50%; transform: translateX(-50%);
     z-index: var(--z-overlay);
     display: flex; gap: 5px; flex-wrap: nowrap;
@@ -529,13 +533,13 @@ html, body {
 /* Responsive */
 @media (min-width: 768px) {
     #fair-panel {
-        left: auto; right: 20px; top: calc(var(--header-h) + 10px);
+        left: auto; right: 20px; top: calc(var(--header-h) + var(--sat, 0px) + 10px);
         bottom: 20px; max-height: none; width: 360px;
         border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
     }
     #fair-panel.collapsed { transform: translateX(calc(100% - 36px + 20px)); }
     #fair-panel-handle { display: none; }
-    #filter-bar { top: calc(var(--header-h) + 10px); left: 20px; transform: none; max-width: none; }
+    #filter-bar { top: calc(var(--header-h) + var(--sat, 0px) + 10px); left: 20px; transform: none; max-width: none; }
     #point-form-panel { left: auto; right: 20px; width: 380px; border-radius: var(--radius-lg); bottom: 20px; }
     #editor-toolbar { bottom: 30px; }
     #fair-panel-toggle { display: flex; align-items: center; justify-content: center; }
